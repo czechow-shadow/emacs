@@ -51,10 +51,18 @@
 (custom-set-faces
  '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 164 :width normal)))))
 
-
-;; Configure packages list
 (require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+;; (package-refresh-contents)
 
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;; Configure paths to downloaded packages
+(let ((default-directory (concat user-emacs-directory "elpa")))
+  (normal-top-level-add-subdirs-to-load-path))
+
+;; Haskell & intero configuration
+(package-install 'intero)
+(add-hook 'haskell-mode-hook 'intero-mode)
+
+(setq flycheck-check-syntax-automatically '(save new-line))
 
