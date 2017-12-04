@@ -1,4 +1,4 @@
-;; Run as first commands to have all property configured
+;; Run as first commands to have emacs directories properly configured
 
 (setq user-init-file (or load-file-name (buffer-file-name)))
 (setq user-emacs-directory (file-name-directory user-init-file))
@@ -8,6 +8,10 @@
 ;; ----------------------------------------------------------------------------
 
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#3F3F3F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#DCDCCC"])
  '(column-number-mode t)
@@ -16,8 +20,7 @@
    (quote
     ("8453c6ba2504874309bdfcda0a69236814cefb860a528eb978b5489422cb1791" "11636897679ca534f0dec6f5e3cb12f28bf217a527755f6b9e744bd240ed47e1" default)))
  '(fci-rule-color "#383838")
- '(inhibit-startup-message t)
- ;;'(menu-bar-mode nil) ;; hide menu
+ '(inhibit-startup-screen t)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
@@ -46,13 +49,21 @@
      (320 . "#8CD0D3")
      (340 . "#94BFF3")
      (360 . "#DC8CC3"))))
- '(vc-annotate-very-old-color "#DC8CC3"))
+ '(vc-annotate-very-old-color "#DC8CC3")
+ '(vc-directory-exclusion-list
+   (quote
+    ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".stack-work"))))
 
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 164 :width normal)))))
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://stable.melpa.org/packages/") t)
 (package-initialize)
 ;; (package-refresh-contents)
 
@@ -65,4 +76,23 @@
 (add-hook 'haskell-mode-hook 'intero-mode)
 
 (setq flycheck-check-syntax-automatically '(save new-line))
+
+;; Helm mode
+(require 'helm-config)
+
+;; Set helm search
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "C-x b") 'helm-buffers-list)
+
+(helm-mode)
+
+(require 'projectile)
+
+(projectile-mode)
+
+(require 'helm-projectile)
+(helm-projectile-on)
+
+(global-set-key (kbd "C-x f") 'helm-projectile-find-file)
 
