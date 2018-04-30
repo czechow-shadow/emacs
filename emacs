@@ -163,6 +163,10 @@
 ;; Do not query about tags reloading
 (setq tags-revert-without-query t)
 
+;; Replace highlighted text on typing
+(delete-selection-mode 1)
+
+
 (defun my-haskell-regenerate-tags ()
   (when (eq major-mode 'haskell-mode)
     (projectile-regenerate-tags)))
