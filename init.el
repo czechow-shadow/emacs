@@ -19,5 +19,12 @@
 (package-install 'intero)
 (package-install 'helm)
 (package-install 'helm-projectile)
+(package-install 'helm-swoop)
+(package-install 'multiple-cursors)
+(package-install 'expand-region)
+(package-install 'undo-tree)
+(package-install 'yasnippet)
+(package-install 'haskell-snippets)
 
+;; Make sure we stop any emacs instances
 (kill-emacs)
