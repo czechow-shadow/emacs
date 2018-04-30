@@ -154,6 +154,9 @@
 ;; Add haskell snippets
 (require 'haskell-snippets)
 
+;; Markdown mode
+(require 'markdown-mode)
+
 ;; Misc
 
 ;; Do not query about tags reloading

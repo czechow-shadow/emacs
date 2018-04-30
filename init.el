@@ -25,6 +25,7 @@
 (package-install 'undo-tree)
 (package-install 'yasnippet)
 (package-install 'haskell-snippets)
+(package-install 'markdown-mode)
 
 ;; Make sure we stop any emacs instances
 (kill-emacs)

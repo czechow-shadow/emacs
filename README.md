@@ -7,4 +7,4 @@ cd emacs-config
 emacs --batch -q -l init.el && cp emacs ~/.emacs
 ```
 
-Emacs is ready and can be run with the  ``` emacs``` command
+Emacs is ready and can be run with the  ```emacs``` command
