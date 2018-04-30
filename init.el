@@ -8,7 +8,7 @@
 ;; If not create it
 (let ((elpa-d (concat user-emacs-directory "elpa")))
   (unless (file-exists-p elpa-d)
-    (make-directory elpa-d)))
+    (make-directory elpa-d t)))
 
 ;; Configure paths to downloaded packages
 (let ((default-directory (concat user-emacs-directory "elpa")))
