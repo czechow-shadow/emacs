@@ -16,7 +16,12 @@
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
- '(projectile-tags-command "find src app -type f | grep hs$ | xargs hasktags -e")
+ '(package-selected-packages
+   (quote
+    (undo-tree multiple-cursors markdown-mode intero helm-swoop helm-projectile haskell-snippets expand-region)))
+ '(safe-local-variable-values
+   (quote
+    ((projectile-tags-command . "find src app -type f | grep hs$ | xargs hasktags -e"))))
  '(show-paren-mode t)
  '(size-indication-mode t)
  '(tool-bar-mode nil)
@@ -55,20 +60,14 @@
     "\n$" "" (downcase (shell-command-to-string "lsb_release -si"))))
 
 
-;; Ubuntu
-;;(custom-set-face
-;; '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 164 :width normal)))))
-
-;;(let ((csf '(:foundry "unknown" :slant normal :weight normal :width normal)))
-;;  (when (equal (which-linux-distro) "debian")
-;;    (custom-set-faces
-;;      '(default ((t (append (:family "DejaVu Sans Mono" :height 143) csf)))))))
-
-
 
 (cond
   ((equal (which-linux-distro) "debian")
     (custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
       '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 143 :width normal))))))
   ((equal (which-linux-distro) "ubuntu")
     (custom-set-faces
@@ -80,7 +79,6 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 ;;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (package-initialize)
-;; (package-refresh-contents)
 
 ;; Configure paths to downloaded packages
 (let ((default-directory (concat user-emacs-directory "elpa")))
@@ -104,16 +102,19 @@
 
 (helm-mode)
 
-(defun my-goto-tag ()
+(defun my-intero-goto-tag ()
   (interactive)
-  (let (mytok (thing-at-point 'word))
-    (message "Tag is %s" mytok)
-    (or (intero-goto-definition) (helm-etags-select mytok))))
+  (let ((tok (thing-at-point 'word)))
+    (or (intero-goto-definition) (helm-etags-select tok))))
 
-;; FIXME: make some of those local
-(global-set-key (kbd "M-.") 'my-goto-tag)
-(global-set-key (kbd "M-i") 'helm-swoop)
-(global-set-key (kbd "M-I") 'intero-goto-definition)
+
+(defun my-intero-mode-config ()
+  "For use in 'intero-mode-hook'."
+  (define-key intero-mode-map (kbd "M-.") 'my-intero-goto-tag)
+  (define-key intero-mode-map (kbd "M-i") 'helm-swoop)
+  (define-key intero-mode-map (kbd "M-I") 'intero-goto-definition))
+
+(add-hook 'intero-mode-hook 'my-intero-mode-config)
 
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
