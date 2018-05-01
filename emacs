@@ -84,6 +84,10 @@
 (let ((default-directory (concat user-emacs-directory "elpa")))
   (normal-top-level-add-subdirs-to-load-path))
 
+;; Org mode
+(global-set-key (kbd "C-c m") 'org-tags-view)
+
+
 ;; Haskell & intero configuration
 (package-install 'intero)
 (add-hook 'haskell-mode-hook 'intero-mode)
@@ -112,7 +116,9 @@
   "For use in 'intero-mode-hook'."
   (define-key intero-mode-map (kbd "M-.") 'my-intero-goto-tag)
   (define-key intero-mode-map (kbd "M-i") 'helm-swoop)
-  (define-key intero-mode-map (kbd "M-I") 'intero-goto-definition))
+  (define-key intero-mode-map (kbd "M-I") 'intero-goto-definition)
+  (define-key intero-mode-map (kbd "M-*") 'pop-tag-mark)
+  )
 
 (add-hook 'intero-mode-hook 'my-intero-mode-config)
 
@@ -173,5 +179,5 @@
 
 (add-hook 'after-save-hook #'my-haskell-regenerate-tags)
 
-
 (setq backup-directory-alist '(("." . "~/.saves")))
+
