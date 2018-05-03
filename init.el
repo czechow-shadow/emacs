@@ -4,15 +4,11 @@
 
 (package-initialize)
 
-;; First make sure the directory exists.
-;; If not create it
+;; Make sure the elpa directory exists.
 (let ((elpa-d (concat user-emacs-directory "elpa")))
   (unless (file-exists-p elpa-d)
     (make-directory elpa-d t)))
 
-;; Configure paths to downloaded packages
-(let ((default-directory (concat user-emacs-directory "elpa")))
-  (normal-top-level-add-subdirs-to-load-path))
 
 (package-refresh-contents)
 
@@ -27,5 +23,11 @@
 (package-install 'haskell-snippets)
 (package-install 'markdown-mode)
 
-;; Make sure we stop any emacs instances
+(package-install 'smart-mode-line)
+(package-install 'smart-mode-line-powerline-theme)
+
+;; This one renders an error during installation. But it seems to work fine.
+(package-install 'workgroups2)
+
+;; Make sure we stop emacs instances
 (kill-emacs)

@@ -10,15 +10,16 @@
  '(custom-enabled-themes (quote (deeper-blue)))
  '(custom-safe-themes
    (quote
-    ("8453c6ba2504874309bdfcda0a69236814cefb860a528eb978b5489422cb1791" "11636897679ca534f0dec6f5e3cb12f28bf217a527755f6b9e744bd240ed47e1" default)))
+    ("84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "8453c6ba2504874309bdfcda0a69236814cefb860a528eb978b5489422cb1791" "11636897679ca534f0dec6f5e3cb12f28bf217a527755f6b9e744bd240ed47e1" default)))
  '(fci-rule-color "#383838")
  '(inhibit-startup-screen t)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (undo-tree multiple-cursors markdown-mode intero helm-swoop helm-projectile haskell-snippets expand-region)))
+    (workgroups2 smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode intero helm-swoop helm-projectile haskell-snippets expand-region)))
  '(safe-local-variable-values
    (quote
     ((projectile-tags-command . "find src app -type f | grep hs$ | xargs hasktags -e"))))
@@ -60,19 +61,24 @@
     "\n$" "" (downcase (shell-command-to-string "lsb_release -si"))))
 
 
-
+;; Font setup
 (cond
   ((equal (which-linux-distro) "debian")
-    (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-      '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 143 :width normal))))))
+    (setq my-default-font-height 100
+          my-font-family "DejaVu Sans Mono"
+          my-default-font-height 100))
   ((equal (which-linux-distro) "ubuntu")
-    (custom-set-faces
-      '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 164 :width normal)))))))
+    (setq my-default-font-height 120 
+          my-font-family "Ubuntu Mono"
+          my-large-font-height 164)))
 
+(custom-set-faces
+ `(default ((t (:family ,my-font-family 
+                :foundry "unknown" 
+                :slant normal 
+                :weight normal 
+                :height ,my-default-font-height
+                :width normal)))))
 
 
 (require 'package)
@@ -84,6 +90,14 @@
 (let ((default-directory (concat user-emacs-directory "elpa")))
   (normal-top-level-add-subdirs-to-load-path))
 
+
+;; Smart-mode-line
+(require 'smart-mode-line)
+(require 'smart-mode-line-powerline-theme)
+(setq sml/theme 'powerline)
+(sml/setup)
+
+
 ;; Org mode
 (global-set-key (kbd "C-c m") 'org-tags-view)
 
@@ -92,8 +106,13 @@
 (package-install 'intero)
 (add-hook 'haskell-mode-hook 'intero-mode)
 
+
+(require 'flycheck)
 ;; Set flycheck action on file save
 (setq flycheck-check-syntax-automatically '(save new-line))
+
+;; Do not show error in minibuffer if flycheck buffer is shown
+(setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
 
 ;; Helm mode
 (require 'helm)
@@ -106,6 +125,7 @@
 
 (helm-mode)
 
+;; If intero goto definition fails, use tags file
 (defun my-intero-goto-tag ()
   (interactive)
   (let ((tok (thing-at-point 'word)))
@@ -122,10 +142,14 @@
 
 (add-hook 'intero-mode-hook 'my-intero-mode-config)
 
-(global-set-key (kbd "M-n") 'next-error)
-(global-set-key (kbd "M-p") 'previous-error)
+;; Make TAB invoke completion action in intero-repl mode
+(defun my-intero-repl-mode-config ()
+  "For use in 'intero-repl-mode-hook'."
+  (define-key intero-repl-mode-map (kbd "TAB") 'complete-symbol)
+  )
 
-(helm-mode)
+(add-hook 'intero-repl-mode-hook 'my-intero-repl-mode-config)
+
 
 (require 'projectile)
 (projectile-mode)
@@ -164,10 +188,27 @@
 ;; Markdown mode
 (require 'markdown-mode)
 
-;; Misc
+
+;; ===========================================================================
+;;                                     Misc
+;; ===========================================================================
+
+;; Error navigation
+(global-set-key (kbd "M-n") 'next-error)
+(global-set-key (kbd "M-p") 'previous-error)
+
+;; Cycle through buffers (windows)
+(global-set-key (kbd "C-S-o") 'other-window)
+
+;; Show previously shown buffer
+(global-set-key (kbd "C-S-i") 'mode-line-other-buffer)
+
 
 ;; Do not query about tags reloading
 (setq tags-revert-without-query t)
+
+;; Shorten answers
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Replace highlighted text on typing
 (delete-selection-mode 1)
@@ -180,4 +221,20 @@
 (add-hook 'after-save-hook #'my-haskell-regenerate-tags)
 
 (setq backup-directory-alist '(("." . "~/.saves")))
+
+
+;; Setup larger fonts for Haskell and Org modes
+(defun my-buffer-face-mode-code ()
+  "Set font to a hivariable width (proportional) fonts in current buffer"
+  (interactive)
+  (setq buffer-face-mode-face `(:height ,my-large-font-height))
+  (buffer-face-mode))
+
+(add-hook 'haskell-mode-hook 'my-buffer-face-mode-code)
+(add-hook 'org-mode-hook 'my-buffer-face-mode-code)
+
+;; Workgroups mode
+(require 'workgroups2)
+(workgroups-mode 1)
+
 
