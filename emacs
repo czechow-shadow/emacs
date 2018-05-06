@@ -146,6 +146,7 @@
 (defun my-intero-repl-mode-config ()
   "For use in 'intero-repl-mode-hook'."
   (define-key intero-repl-mode-map (kbd "TAB") 'complete-symbol)
+  (define-key intero-repl-mode-map (kbd "<C-return>") 'find-file-at-point)
   )
 
 (add-hook 'intero-repl-mode-hook 'my-intero-repl-mode-config)
