@@ -66,7 +66,7 @@
   ((equal (which-linux-distro) "debian")
     (setq my-default-font-height 100
           my-font-family "DejaVu Sans Mono"
-          my-default-font-height 100))
+          my-large-font-height 143))
   ((equal (which-linux-distro) "ubuntu")
     (setq my-default-font-height 120 
           my-font-family "Ubuntu Mono"
@@ -235,7 +235,7 @@
 (add-hook 'org-mode-hook 'my-buffer-face-mode-code)
 
 ;; Workgroups mode
-(require 'workgroups2)
-(workgroups-mode 1)
+;; (require 'workgroups2)
+;; (workgroups-mode 1)
 
 
