@@ -19,7 +19,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (workgroups2 smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode intero helm-swoop helm-projectile haskell-snippets expand-region)))
+    (evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode intero helm-swoop helm-projectile haskell-snippets expand-region)))
  '(safe-local-variable-values
    (quote
     ((projectile-tags-command . "find src app -type f | grep hs$ | xargs hasktags -e"))))
@@ -234,8 +234,12 @@
 (add-hook 'haskell-mode-hook 'my-buffer-face-mode-code)
 (add-hook 'org-mode-hook 'my-buffer-face-mode-code)
 
-;; Workgroups mode
-(require 'workgroups2)
-(workgroups-mode 1)
+(evil-mode)
+
+;; Unbind some of evil-mode's defaults
+(with-eval-after-load 'evil-maps
+  (define-key evil-normal-state-map (kbd "C-.") nil)
+  (define-key evil-normal-state-map (kbd "M-.") nil)
+  )
 
 

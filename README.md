@@ -1,6 +1,12 @@
-# Emacs tips and tricks
+# Emacs Haskell development configuration with evil mode
 
-## Installing environment onto a new box/account
+## Installing environment
+Wipe out previous emacs configuration
+```
+rm -fr ~/.emacs ~/.emacs.d
+```
+
+Install new configuration
 ```
 git clone https://github.com/czechow-shadow/emacs-config.git
 cd emacs-config

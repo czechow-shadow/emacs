@@ -26,8 +26,9 @@
 (package-install 'smart-mode-line)
 (package-install 'smart-mode-line-powerline-theme)
 
-;; This one renders an error during installation. But it seems to work fine.
-(package-install 'workgroups2)
+(package-install 'ag)
+(package-install 'helm-ag)
+(package-install 'evil)
 
 ;; Make sure we stop emacs instances
 (kill-emacs)
