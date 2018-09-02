@@ -90,6 +90,8 @@
 (let ((default-directory (concat user-emacs-directory "elpa")))
   (normal-top-level-add-subdirs-to-load-path))
 
+(let ((default-directory (concat user-emacs-directory "custom")))
+  (normal-top-level-add-subdirs-to-load-path))
 
 ;; Smart-mode-line
 (require 'smart-mode-line)
@@ -199,10 +201,10 @@
 (global-set-key (kbd "M-p") 'previous-error)
 
 ;; Cycle through buffers (windows)
-(global-set-key (kbd "C-S-o") 'other-window)
+;;(global-set-key (kbd "C-S-o") 'other-window)
 
 ;; Show previously shown buffer
-(global-set-key (kbd "C-S-i") 'mode-line-other-buffer)
+(global-set-key (kbd "C-S-o") 'mode-line-other-buffer)
 
 
 ;; Do not query about tags reloading
@@ -242,4 +244,26 @@
   (define-key evil-normal-state-map (kbd "M-.") nil)
   )
 
+
+(global-set-key (kbd "C-x C-s") 'save-buffer-always)
+(defun save-buffer-always ()
+  "Save the buffer even if it is not modified."
+  (interactive)
+  (set-buffer-modified-p t)
+  (save-buffer))
+
+(evil-define-operator evil-write-always (beg end type file-or-append &optional bang)
+  "Hack around emacs's save-buffer - we want to save buffer always"
+  :motion nil
+  :move-point nil
+  :type line
+  :repeat nil
+  (interactive "<R><fsh><!>")
+  (set-buffer-modified-p t)
+  (evil-write beg end type file-or-append bang))
+
+(evil-ex-define-cmd "w[rite]" 'evil-write-always)
+
+(require 'ghcid)
+(require 'projectile-ghcid)
 

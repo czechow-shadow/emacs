@@ -10,7 +10,7 @@ Install new configuration
 ```
 git clone https://github.com/czechow-shadow/emacs-config.git
 cd emacs-config
-emacs --batch -q -l init.el && cp emacs ~/.emacs
+emacs --batch -q -l init.el && cp emacs ~/.emacs && cp -r custom ~/.emacs.d/
 ```
 
 Emacs is ready and can be run with the  ```emacs``` command
