@@ -242,6 +242,8 @@
 (with-eval-after-load 'evil-maps
   (define-key evil-normal-state-map (kbd "C-.") nil)
   (define-key evil-normal-state-map (kbd "M-.") nil)
+  (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-tag)
+  (define-key evil-normal-state-map (kbd "C-n") 'helm-projectile-ag)
   )
 
 
