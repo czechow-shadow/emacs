@@ -11,16 +11,11 @@
  '(custom-safe-themes
    (quote
     ("84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "8453c6ba2504874309bdfcda0a69236814cefb860a528eb978b5489422cb1791" "11636897679ca534f0dec6f5e3cb12f28bf217a527755f6b9e744bd240ed47e1" default)))
+ ;; Dante configuration
  '(dante-debug (quote (inputs outputs responses command-line)))
- '(dante-methods
-   (quote
-    (nix impure-nix new-build nix-ghci bare-cabal bare-ghci)))
-;;  '(dante-project-root "/home/czechow/work/spike/rfl-first/frontend")
- '(dante-repl-command-line (quote ("cabal" "new-repl")))
+ '(dante-methods (quote (nix impure-nix new-build nix-ghci bare-cabal bare-ghci)))
+ ;; Dante configuration end
  '(fci-rule-color "#383838")
-; '(flycheck-checkers
-;   (quote
-;    (ada-gnat asciidoctor asciidoc c/c++-clang c/c++-gcc c/c++-cppcheck cfengine chef-foodcritic coffee coffee-coffeelint coq css-csslint css-stylelint cwl d-dmd dockerfile-hadolint emacs-lisp emacs-lisp-checkdoc erlang-rebar3 erlang eruby-erubis fortran-gfortran go-gofmt go-golint go-vet go-build go-test go-errcheck go-unconvert go-megacheck groovy haml handlebars haskell-stack-ghc haskell-ghc haskell-dante haskell-hlint html-tidy javascript-eslint javascript-jshint javascript-standard json-jsonlint json-python-json jsonnet less less-stylelint llvm-llc lua-luacheck lua markdown-markdownlint-cli markdown-mdl nix perl perl-perlcritic php php-phpmd php-phpcs processing proselint protobuf-protoc pug puppet-parser puppet-lint python-flake8 python-pylint python-pycompile python-mypy r-lintr racket rpm-rpmlint rst-sphinx rst ruby-rubocop ruby-reek ruby-rubylint ruby ruby-jruby rust-cargo rust rust-clippy scala scala-scalastyle scheme-chicken scss-lint scss-stylelint sass/scss-sass-lint sass scss sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck slim slim-lint sql-sqlint systemd-analyze tcl-nagelfar tex-chktex tex-lacheck texinfo typescript-tslint verilog-verilator vhdl-ghdl xml-xmlstarlet xml-xmllint yaml-jsyaml yaml-ruby)))
  '(inhibit-startup-screen t)
  '(nrepl-message-colors
    (quote
@@ -122,7 +117,7 @@
 
 (require 'flycheck)
 ;; Set flycheck action on file save
-(setq flycheck-check-syntax-automatically '(save new-line))
+(setq flycheck-check-syntax-automatically '(save))
 
 ;; Do not show error in minibuffer if flycheck buffer is shown
 (setq flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
@@ -277,7 +272,7 @@
 
 (evil-ex-define-cmd "w[rite]" 'evil-write-always)
 
-(require 'ghcid)
+; ghcid with projectile
 (require 'projectile-ghcid)
 
 
@@ -285,22 +280,22 @@
 (load-file (let ((coding-system-for-read 'utf-8))
                 (shell-command-to-string "agda-mode locate")))
 
-;; FIXME: Take care of dependency on f and lcr packages
-;; Warn: dependency on f and lcr packages
+;; Dante =~ intero under nix ;-)
 (require 'dante)
 
-(require 'use-package)
-(use-package dante
-  :ensure t
-  :after haskell-mode
-  :commands 'dante-mode
-  :init
-  ;; (add-hook 'haskell-mode-hook 'dante-mode)
-
-  ;; (add-hook 'haskell-mode-hook 'flycheck-mode)
-  ;; OR:
-  ;; (add-hook 'haskell-mode-hook 'flymake-mode)
-  )
+;; FIXME: the following can be probably thrown away
+;(require 'use-package)
+;(use-package dante
+;  :ensure t
+;  :after haskell-mode
+;  :commands 'dante-mode
+;  :init
+;  ;; (add-hook 'haskell-mode-hook 'dante-mode)
+;
+;  ;; (add-hook 'haskell-mode-hook 'flycheck-mode)
+;  ;; OR:
+;  ;; (add-hook 'haskell-mode-hook 'flymake-mode)
+;  )
 
 
 
@@ -309,12 +304,12 @@
   "Choosing either stack or dante mode."
   (message "Choosing haskell mode -> up and running")
   (message (concat "Projectile project root: " (projectile-project-root)))
-  (if (projectile-locate-dominating-file "." "shell.nix")
+  (if (locate-dominating-file "." "shell.nix")
       (progn (message "Enabling dante mode")
-	     (dante-mode)
-	     (flycheck-mode))
-    (progn (message "Enabling intero mode")
-	   (intero-mode))))
+        (flycheck-mode)
+        (dante-mode))
+      (progn (message "Enabling intero mode")
+        (intero-mode))))
 
-;; (add-hook 'haskell-mode-hook 'flycheck-mode)
+;; (add-hook 'haskell-mode-hook 'flycheck-mode) ;; probably not needed
 (add-hook 'haskell-mode-hook 'my-choose-haskell-mode)

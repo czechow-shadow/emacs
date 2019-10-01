@@ -1,16 +1,17 @@
-# Emacs Haskell development configuration with evil mode
+# Emacs Haskell development configuration (intero and dante+nix) with evil mode 
 
 ## Installing environment
-Wipe out previous emacs configuration
-```
-rm -fr ~/.emacs ~/.emacs.d
-```
+Install new configuration into $HOME directory.  If you alread have
+emacs config there (.emacs and .emacs.d), use `./install.sh --force`
+(previous config will be backed up) or delete config manually.
 
-Install new configuration
 ```
+cd /path/to/your/config-dir # create it if necessary
+
 git clone https://github.com/czechow-shadow/emacs-config.git
 cd emacs-config
-emacs --batch -q -l init.el && cp emacs ~/.emacs && cp -r custom ~/.emacs.d/
+
+./install.sh
 ```
 
 Emacs is ready and can be run with the  ```emacs``` command
