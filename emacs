@@ -11,10 +11,10 @@
  '(custom-safe-themes
    (quote
     ("84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "8453c6ba2504874309bdfcda0a69236814cefb860a528eb978b5489422cb1791" "11636897679ca534f0dec6f5e3cb12f28bf217a527755f6b9e744bd240ed47e1" default)))
- ;; Dante configuration
  '(dante-debug (quote (inputs outputs responses command-line)))
- '(dante-methods (quote (nix impure-nix new-build nix-ghci bare-cabal bare-ghci)))
- ;; Dante configuration end
+ '(dante-methods
+   (quote
+    (nix impure-nix new-build nix-ghci bare-cabal bare-ghci)))
  '(fci-rule-color "#383838")
  '(inhibit-startup-screen t)
  '(nrepl-message-colors
@@ -23,7 +23,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(safe-local-variable-values
    (quote
     ((projectile-tags-command . "find src app -type f | grep hs$ | xargs hasktags -e"))))
@@ -84,6 +84,8 @@
                 :height ,my-default-font-height
                 :width normal)))))
 
+;; Do not display tooltips with default gtk look
+ (setq x-gtk-use-system-tooltips nil)
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -132,6 +134,9 @@
 (global-set-key (kbd "C-x b") 'helm-buffers-list)
 
 (helm-mode)
+;; Make Helm open in the currently open window
+(add-to-list 'display-buffer-alist '("*Help*" display-buffer-same-window))
+
 
 ;; If intero goto definition fails, use tags file
 (defun my-intero-goto-tag ()
@@ -162,6 +167,12 @@
 
 (require 'projectile)
 (projectile-mode)
+
+;; Make safe variable for all searched directories
+(put 'projectile-tags-command 'safe-local-variable
+     (lambda (cmd)
+       (string-match-p "^find\\(\s+[^\s|]+\\)+\s+\|\s+grep\s+hs\$\s+\|\s+xargs\s+hasktags\s+-e$"
+		       cmd)))
 
 (require 'helm-projectile)
 (helm-projectile-on)
@@ -219,6 +230,9 @@
 ;; Shorten answers
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;; Do not query about following symlinks
+(setq vc-follow-symlinks t)
+
 ;; Replace highlighted text on typing
 (delete-selection-mode 1)
 
@@ -242,7 +256,7 @@
 (add-hook 'haskell-mode-hook 'my-buffer-face-mode-code)
 (add-hook 'org-mode-hook 'my-buffer-face-mode-code)
 
-(evil-mode)
+(evil-mode 1)
 
 ;; Unbind some of evil-mode's defaults
 (with-eval-after-load 'evil-maps
@@ -250,6 +264,7 @@
   (define-key evil-normal-state-map (kbd "M-.") nil)
   (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-tag)
   (define-key evil-normal-state-map (kbd "C-n") 'helm-projectile-ag)
+  (define-key evil-normal-state-map (kbd "M-RET") 'magit-status)
   )
 
 
@@ -271,6 +286,23 @@
   (evil-write beg end type file-or-append bang))
 
 (evil-ex-define-cmd "w[rite]" 'evil-write-always)
+
+; Highlight TODO/FIXME/etc
+(require 'hl-todo)
+(global-hl-todo-mode)
+
+; magit mode
+(require 'magit)
+(require 'evil-magit)
+
+; Highlight git changes
+(require 'diff-hl)
+(global-diff-hl-mode 1)
+
+; Map hunk reverting to some key combo
+(global-set-key (kbd "C-M-r") 'diff-hl-revert-hunk)
+
+
 
 ; ghcid with projectile
 (require 'projectile-ghcid)
@@ -313,3 +345,17 @@
 
 ;; (add-hook 'haskell-mode-hook 'flycheck-mode) ;; probably not needed
 (add-hook 'haskell-mode-hook 'my-choose-haskell-mode)
+
+
+;; Buffer size management
+(defun set-window-width (n)
+  "Set the selected window's width."
+  (adjust-window-trailing-edge (selected-window) (- n (window-width)) t))
+
+(defun set-80-columns ()
+  "Set the selected window to 80 columns."
+  (interactive)
+  (set-window-width 110))
+
+(global-set-key (kbd "C-x C-`") 'set-80-columns)
+

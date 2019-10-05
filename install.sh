@@ -29,12 +29,14 @@ fi
 GIT_DIRS=()
 for u in ${!GIT_REPOS[@]}; do
   dir=`basename $u .git`;
-  GIT_DIRS+=($dir);
+  GIT_DIRS+=(../$dir);
 done
 
-for i in ${FILES[@]} ${GIT_DIRS[@]}; do
-  f="$DEST_DIR/$i";
-  fb="$DEST_DIR/${i}_`date '+%F_%T'`";
+BACKUP_SUFFIX=_`date '+%F_%T'`
+
+for f in ${GIT_DIRS[@]}; do
+  fb="${f}$BACKUP_SUFFIX";
+  echo "Checking [$f]";
 
   if [ -e "$f" -o -h "$f" ]; then
     echo "$f already exists";
@@ -48,6 +50,22 @@ for i in ${FILES[@]} ${GIT_DIRS[@]}; do
   fi
 done
 
+for i in ${FILES[@]}; do
+  f="$DEST_DIR/$i";
+  fb="$DEST_DIR/${i}${BACKUP_SUFFIX}";
+  echo "Checking [$f]";
+
+  if [ -e "$f" -o -h "$f" ]; then
+    echo "$f already exists";
+    if [ -n "$FORCE" ]; then
+      echo "Backing up $f to $fb";
+      mv "$f" "$fb";
+    else
+      echo "Aborted";
+      exit 2;
+    fi
+  fi
+done
 
 echo "Installing emacs packages"
 emacs --batch -q -l init.el
