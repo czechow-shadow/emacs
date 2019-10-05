@@ -23,7 +23,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(safe-local-variable-values
    (quote
     ((projectile-tags-command . "find src app -type f | grep hs$ | xargs hasktags -e"))))
@@ -294,6 +294,10 @@
 (require 'hl-todo)
 (global-hl-todo-mode)
 
+;; Track your cursor
+(require 'beacon)
+(beacon-mode 1)	;; Turn on globally
+
 ; magit mode
 (require 'magit)
 (require 'evil-magit)
@@ -311,27 +315,12 @@
 (require 'projectile-ghcid)
 
 
-;; Agda stuff
-(load-file (let ((coding-system-for-read 'utf-8))
-                (shell-command-to-string "agda-mode locate")))
+;; ;; Agda stuff
+;; (load-file (let ((coding-system-for-read 'utf-8))
+;;                 (shell-command-to-string "agda-mode locate")))
 
 ;; Dante =~ intero under nix ;-)
 (require 'dante)
-
-;; FIXME: the following can be probably thrown away
-;(require 'use-package)
-;(use-package dante
-;  :ensure t
-;  :after haskell-mode
-;  :commands 'dante-mode
-;  :init
-;  ;; (add-hook 'haskell-mode-hook 'dante-mode)
-;
-;  ;; (add-hook 'haskell-mode-hook 'flycheck-mode)
-;  ;; OR:
-;  ;; (add-hook 'haskell-mode-hook 'flymake-mode)
-;  )
-
 
 
 ; 'my-choose-haskell-mode

@@ -16,6 +16,7 @@
 
 (package-install 'undo-tree)
 (package-install 'ace-window)
+(package-install 'beacon)
 (package-install 'helm)
 (package-install 'helm-projectile)
 (package-install 'helm-swoop)
