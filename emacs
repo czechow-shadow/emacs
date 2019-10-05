@@ -23,7 +23,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(safe-local-variable-values
    (quote
     ((projectile-tags-command . "find src app -type f | grep hs$ | xargs hasktags -e"))))
@@ -113,8 +113,6 @@
 ;; Haskell & intero configuration
 ;; (package-install 'intero)
 (require 'intero)
-;; FIXME: uncomment
-;; (add-hook 'haskell-mode-hook 'intero-mode)
 
 
 (require 'flycheck)
@@ -208,6 +206,11 @@
 ;; Markdown mode
 (require 'markdown-mode)
 
+
+;; Ace-window
+(require 'ace-window)
+(global-set-key (kbd "M-o") 'ace-window)
+(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
 
 ;; ===========================================================================
 ;;                                     Misc

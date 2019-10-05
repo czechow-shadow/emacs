@@ -15,6 +15,7 @@
 (package-refresh-contents)
 
 (package-install 'undo-tree)
+(package-install 'ace-window)
 (package-install 'helm)
 (package-install 'helm-projectile)
 (package-install 'helm-swoop)
