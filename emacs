@@ -17,6 +17,7 @@
     (nix impure-nix new-build nix-ghci bare-cabal bare-ghci)))
  '(dante-tap-type-time 1)
  '(fci-rule-color "#383838")
+ '(helm-mode t)
  '(inhibit-startup-screen t)
  '(nrepl-message-colors
    (quote
@@ -88,7 +89,10 @@
                 :slant normal 
                 :weight normal 
                 :height ,my-default-font-height
-                :width normal)))))
+                :width normal))))
+ '(helm-etags-file ((t (:foreground "violet" :underline t))))
+ '(helm-ff-file ((t (:foreground "violet")))))
+ )
 
 ;; Do not display tooltips with default gtk look
  (setq x-gtk-use-system-tooltips nil)
