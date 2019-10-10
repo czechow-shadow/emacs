@@ -15,6 +15,7 @@
  '(dante-methods
    (quote
     (nix impure-nix new-build nix-ghci bare-cabal bare-ghci)))
+ '(dante-tap-type-time 1)
  '(fci-rule-color "#383838")
  '(inhibit-startup-screen t)
  '(nrepl-message-colors
@@ -59,10 +60,10 @@
 
 
 (defun which-linux-distro ()
-  "from lsb_release"
+  "Detect by /etc/os-release"
   (interactive)
   (replace-regexp-in-string
-    "\n$" "" (downcase (shell-command-to-string "lsb_release -si"))))
+    "\n$" "" (downcase (shell-command-to-string "cat /etc/os-release | sed 's/\"//g' | awk -F '=' '/^ID=/ {print $2}'"))))
 
 
 ;; Font setup
@@ -74,7 +75,12 @@
   ((equal (which-linux-distro) "ubuntu")
     (setq my-default-font-height 120
           my-font-family "Ubuntu Mono"
-          my-large-font-height 164)))
+          my-large-font-height 164))
+  ((equal (which-linux-distro) "rhel")
+    (setq my-default-font-height 94
+          my-font-family "DejaVu Sans Mono"
+          my-large-font-height 143))
+  )
 
 (custom-set-faces
  `(default ((t (:family ,my-font-family 
@@ -269,7 +275,7 @@
 (with-eval-after-load 'evil-maps
   (define-key evil-normal-state-map (kbd "C-.") nil)
   (define-key evil-normal-state-map (kbd "M-.") nil)
-  (define-key evil-normal-state-map (kbd "C-p") 'projectile-find-tag)
+  (define-key evil-normal-state-map (kbd "C-p") 'helm-etags-select)
   (define-key evil-normal-state-map (kbd "C-n") 'helm-projectile-ag)
   ;; magit
   (define-key evil-normal-state-map (kbd "M-RET") 'magit-status)
