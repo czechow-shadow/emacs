@@ -91,7 +91,7 @@
                 :height ,my-default-font-height
                 :width normal))))
  '(helm-etags-file ((t (:foreground "violet" :underline t))))
- '(helm-ff-file ((t (:foreground "violet")))))
+ '(helm-ff-file ((t (:foreground "violet"))))
  )
 
 ;; Do not display tooltips with default gtk look
@@ -181,6 +181,8 @@
      (lambda (cmd)
        (string-match-p "^find\\(\s+[^\s|]+\\)+\s+\|\s+grep\s+hs\$\s+\|\s+xargs\s+hasktags\s+-e$"
 		       cmd)))
+
+(put 'dante-repl-command-line 'safe-local-variable (lambda (_) t))
 
 (require 'helm-projectile)
 (helm-projectile-on)
