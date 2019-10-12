@@ -25,7 +25,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(safe-local-variable-values
    (quote
     ((projectile-tags-command . "find src app -type f | grep hs$ | xargs hasktags -e"))))
@@ -84,10 +84,10 @@
   )
 
 (custom-set-faces
- `(default ((t (:family ,my-font-family 
-                :foundry "unknown" 
-                :slant normal 
-                :weight normal 
+ `(default ((t (:family ,my-font-family
+                :foundry "unknown"
+                :slant normal
+                :weight normal
                 :height ,my-default-font-height
                 :width normal))))
  '(helm-etags-file ((t (:foreground "violet" :underline t))))
@@ -196,14 +196,9 @@
 (global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key (kbd "C--") 'er/contract-region)
 
-;; Multiple cursors
-(require 'multiple-cursors)
-
-(global-set-key (kbd "C-.") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-,") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C->") 'mc/skip-to-next-like-this)
-(global-set-key (kbd "C-<") 'mc/skip-to-previous-like-this)
-
+;; Evil multiple cursors
+(require 'evil-mc)
+(global-evil-mc-mode  1)
 
 (require 'undo-tree)
 (global-undo-tree-mode)
@@ -277,7 +272,7 @@
 
 (evil-mode 1)
 
-;; Unbind some of evil-mode's defaults
+;; Change some of evil-mode's defaults
 (with-eval-after-load 'evil-maps
   (define-key evil-normal-state-map (kbd "C-.") nil)
   (define-key evil-normal-state-map (kbd "M-.") nil)
@@ -288,8 +283,16 @@
   ;; move-text
   (define-key evil-visual-state-map "J" (concat ":m '>+1" (kbd "RET") "gv=gv"))
   (define-key evil-visual-state-map "K" (concat ":m '<-2" (kbd "RET") "gv=gv"))
-  )
+  ;; evil-mc
+  (define-key evil-normal-state-map (kbd "C->") 'evil-mc-make-and-goto-next-match)
+  (define-key evil-normal-state-map (kbd "C-<") 'evil-mc-make-and-goto-prev-match)
 
+  (define-key evil-normal-state-map (kbd "M-C->") 'evil-mc-skip-and-goto-next-match)
+  (define-key evil-normal-state-map (kbd "M-C-<") 'evil-mc-skip-and-goto-prev-match)
+
+  (define-key evil-normal-state-map "grm" 'evil-mc-make-all-cursors)
+  (define-key evil-normal-state-map "grq" 'evil-mc-undo-all-cursors)
+  )
 
 (global-set-key (kbd "C-x C-s") 'save-buffer-always)
 (defun save-buffer-always ()
@@ -316,7 +319,7 @@
 
 ;; Track your cursor
 (require 'beacon)
-(beacon-mode 1)	;; Turn on globally
+(beacon-mode 1) ;; Turn on globally
 
 ; magit mode
 (require 'magit)
@@ -370,4 +373,3 @@
   (set-window-width 110))
 
 (global-set-key (kbd "C-x C-`") 'set-80-columns)
-
