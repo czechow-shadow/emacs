@@ -26,6 +26,7 @@
  '(package-selected-packages
    (quote
     (evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+ '(projectile-git-submodule-command nil)
  '(safe-local-variable-values
    (quote
     ((projectile-tags-command . "find src app -type f | grep hs$ | xargs hasktags -e"))))
@@ -78,6 +79,10 @@
           my-font-family "Ubuntu Mono"
           my-large-font-height 164))
   ((equal (which-linux-distro) "rhel")
+    (setq my-default-font-height 94
+          my-font-family "DejaVu Sans Mono"
+          my-large-font-height 143))
+  (t ;; fallback
     (setq my-default-font-height 94
           my-font-family "DejaVu Sans Mono"
           my-large-font-height 143))
@@ -373,3 +378,7 @@
   (set-window-width 110))
 
 (global-set-key (kbd "C-x C-`") 'set-80-columns)
+
+;; Switch buffers with helm
+
+(global-set-key (kbd "M-`") 'helm-buffers-list)
