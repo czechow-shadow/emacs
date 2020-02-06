@@ -25,7 +25,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (evil-search-highlight-persist highlight aggressive-indent linum-relative evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(projectile-git-submodule-command nil)
  '(safe-local-variable-values
    (quote
@@ -33,7 +33,6 @@
  '(show-paren-mode t)
  '(size-indication-mode t)
  '(tool-bar-mode nil)
- '(transient-mark-mode (quote (only . t)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
@@ -89,12 +88,11 @@
   )
 
 (custom-set-faces
- `(default ((t (:family ,my-font-family
-                :foundry "unknown"
-                :slant normal
-                :weight normal
-                :height ,my-default-font-height
-                :width normal))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Victor Mono" :foundry "UKWN" :slant normal :weight normal :height 98 :width normal))))
  '(helm-etags-file ((t (:foreground "violet" :underline t))))
  '(helm-ff-file ((t (:foreground "violet")))))
 
@@ -269,8 +267,9 @@
 (defun my-buffer-face-mode-code ()
   "Set font to a hivariable width (proportional) fonts in current buffer"
   (interactive)
-  (setq buffer-face-mode-face `(:height ,my-large-font-height))
-  (buffer-face-mode))
+  ;; (setq buffer-face-mode-face `(:height ,my-large-font-height));; FIXME: removed for now
+  ;;(buffer-face-mode))
+  )
 
 (add-hook 'haskell-mode-hook 'my-buffer-face-mode-code)
 (add-hook 'org-mode-hook 'my-buffer-face-mode-code)
@@ -358,10 +357,10 @@
   (message (concat "Projectile project root: " (projectile-project-root)))
   (if (locate-dominating-file "." "shell.nix")
       (progn (message "Enabling dante mode")
-        (flycheck-mode)
-        (dante-mode))
-      (progn (message "Enabling intero mode")
-        (intero-mode))))
+	     (flycheck-mode)
+	     (dante-mode))
+    (progn (message "NOT Enabling intero mode")
+        ))) ;; -- b(intero-mode))))
 
 ;; (add-hook 'haskell-mode-hook 'flycheck-mode) ;; probably not needed
 (add-hook 'haskell-mode-hook 'my-choose-haskell-mode)
@@ -382,3 +381,129 @@
 ;; Switch buffers with helm
 
 (global-set-key (kbd "M-`") 'helm-buffers-list)
+
+;; Set indentation for shell
+(setq sh-basic-offset 2)
+
+;; Turn on haskell mode for mu e
+(add-to-list 'auto-mode-alist '("\\.mu\\'" . haskell-mode))
+
+(defun open-mu-file-at-point (start end)
+  "Open"
+  (message "Region point %d" (string start)))
+
+
+(global-set-key (kbd "C-x C-x") 'open-mu-file-at-point)
+
+
+;; question why do we struggle to get haskell-ident-at-point
+(defun open-mu-file-at-point ()
+  "Print number of lines and characters in the region."
+  (interactive)
+  ;; (message "%s" (buffer-substring-no-properties (region-beginning) (region-end)))
+  (let* ((id (if (use-region-p)
+		 (buffer-substring-no-properties (region-beginning) (region-end))
+	       (haskell-ident-at-point)))
+	 (fn (replace-regexp-in-string "\\." "/" id))
+	 (fname (concat (projectile-project-root) "/Mu/" fn ".mu"))
+	 (xxx "sdfsdf"))
+
+    ;; (message "File: %s, ident %s" fname id)
+    (if (file-exists-p fname)
+	(find-file fname)
+      (message "File %s cannot be found (ident %s) " fname id))))
+    ;; (let* ((fn (replace-regexp-in-string "\\." "/" id))
+    ;; 	   (fname (concat (projectile-project-root) "/Mu/" fn ".mu")))
+    ;;   (if (file-exists-p fname)
+    ;; 	  (find-file fname)
+    ;; 	(message "File %s cannot be found (ident %s) " fname id)))))
+  ;; (message "fname: %s" fname)
+    ;; (message "ident: %s" (haskell-ident-at-point))
+
+
+    ;; ))
+    ;; ;; (find-file fname)))
+
+  ;; ;; (message "Region beg: %d, end: %d" (region-beginning) (region-end))
+  ;; (message "%s" (haskell-ident-at-point))
+  ;; (message "HERE"))
+
+
+(defun haskell-ident-pos-at-point ()
+  "Return the span of the identifier near point going backward.
+Returns nil if no identifier found or point is inside string or
+comment.  May return a qualified name."
+  (when (not (nth 8 (syntax-ppss)))
+    ;; Do not handle comments and strings
+    (let (start end)
+      ;; Initial point position is non-deterministic, it may occur anywhere
+      ;; inside identifier span, so the approach is:
+      ;; - first try go left and find left boundary
+      ;; - then try go right and find right boundary
+      ;;
+      ;; In both cases assume the longest path, e.g. when going left take into
+      ;; account than point may occur at the end of identifier, when going right
+      ;; take into account that point may occur at the beginning of identifier.
+      ;;
+      ;; We should handle `.` character very careful because it is heavily
+      ;; overloaded.  Examples of possible cases:
+      ;; Control.Monad.>>=  -- delimiter
+      ;; Control.Monad.when -- delimiter
+      ;; Data.Aeson..:      -- delimiter and operator symbol
+      ;; concat.map         -- composition function
+      ;; .?                 -- operator symbol
+      (save-excursion
+        ;; First, skip whitespace if we're on it, moving point to last
+        ;; identifier char.  That way, if we're at "map ", we'll see the word
+        ;; "map".
+        (when (and (eolp)
+                   (not (bolp)))
+          (backward-char))
+        (when (and (not (eobp))
+                   (eq (char-syntax (char-after)) ? ))
+          (skip-chars-backward " \t")
+          (backward-char))
+        ;; Now let's try to go left.
+        (save-excursion
+          (if (not (haskell-mode--looking-at-varsym))
+              ;; Looking at non-operator char, this is quite simple
+              (progn
+                (skip-syntax-backward "w_")
+                ;; Remember position
+                (setq start (point)))
+            ;; Looking at operator char.
+            (while (and (not (bobp))
+                        (haskell-mode--looking-at-varsym))
+              ;; skip all operator chars backward
+              (setq start (point))
+              (backward-char))
+            ;; Extra check for case when reached beginning of the buffer.
+            (when (haskell-mode--looking-at-varsym)
+              (setq start (point))))
+          ;; Slurp qualification part if present.  If identifier is qualified in
+          ;; case of non-operator point will stop before `.` dot, but in case of
+          ;; operator it will stand at `.` delimiting dot.  So if we're looking
+          ;; at `.` let's step one char forward and try to get qualification
+          ;; part.
+          (goto-char start)
+          (when (looking-at-p (rx "."))
+            (forward-char))
+          (let ((pos (haskell-mode--skip-qualification-backward)))
+            (when pos
+              (setq start pos))))
+        ;; Finally, let's try to go right.
+        (save-excursion
+          ;; Try to slurp qualification part first.
+          (skip-syntax-forward "w_")
+          (setq end (point))
+          (while (and (looking-at (rx "." upper))
+                      (not (zerop (progn (forward-char)
+                                         (skip-syntax-forward "w_")))))
+            (setq end (point)))
+          ;; If point was at non-operator we already done, otherwise we need an
+          ;; extra check.
+          (while (haskell-mode--looking-at-varsym)
+            (forward-char)
+            (setq end (point))))
+        (when (not (= start end))
+          (cons start end))))))
