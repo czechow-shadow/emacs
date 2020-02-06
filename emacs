@@ -58,7 +58,10 @@
  '(vc-annotate-very-old-color "#DC8CC3")
  '(vc-directory-exclusion-list
    (quote
-    ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".stack-work"))))
+    ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".stack-work")))
+ '(whitespace-style
+   (quote
+    (face trailing tabs spaces lines newline indentation space-after-tab space-before-tab space-mark tab-mark))))
 
 
 (defun which-linux-distro ()
@@ -260,6 +263,7 @@
   (when (eq major-mode 'haskell-mode)
     (projectile-regenerate-tags)))
 
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'after-save-hook #'my-haskell-regenerate-tags)
 
 (setq backup-directory-alist '(("." . "~/.saves")))
@@ -382,3 +386,13 @@
 ;; Switch buffers with helm
 
 (global-set-key (kbd "M-`") 'helm-buffers-list)
+
+;; Set indentation for sh mode
+(setq sh-basic-offset 2)
+
+;; Tab width for makefile mode
+(add-hook 'makefile-mode-hook (lambda ()
+				(setq-local tab-width 4)
+				(whitespace-mode)))
+
+(add-to-list 'auto-mode-alist '("\\emacs\\'" . lisp-mode))
