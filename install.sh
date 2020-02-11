@@ -10,6 +10,7 @@ FORCE=
 declare -A GIT_REPOS=(\
 [https://github.com/czechow-shadow/projectile-ghcid.git]=master \
 [https://github.com/czechow-shadow/evil-mc.git]=master \
+[https://github.com/czechow-shadow/org-jira.git]=master \
 [https://github.com/chrisdone/intero.git]=master \
 [https://github.com/jyp/dante.git]=master \
 )

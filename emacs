@@ -25,7 +25,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (org-jira evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(projectile-git-submodule-command nil)
  '(safe-local-variable-values
    (quote
@@ -396,3 +396,8 @@
 				(whitespace-mode)))
 
 (add-to-list 'auto-mode-alist '("\\emacs\\'" . lisp-mode))
+
+(require 'org-jira)
+
+;; FIXME: experiments only
+(setq jiralib-url "http://localhost:8080")
