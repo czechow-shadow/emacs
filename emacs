@@ -1,3 +1,4 @@
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -25,7 +26,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(projectile-git-submodule-command nil)
  '(safe-local-variable-values
    (quote
@@ -364,8 +365,9 @@
       (progn (message "Enabling dante mode")
         (flycheck-mode)
         (dante-mode))
-      (progn (message "Enabling intero mode")
-        (intero-mode))))
+      (progn (message "NOT enabling intero mode")
+        ;;(intero-mode))))
+        )))
 
 ;; (add-hook 'haskell-mode-hook 'flycheck-mode) ;; probably not needed
 (add-hook 'haskell-mode-hook 'my-choose-haskell-mode)
@@ -401,3 +403,27 @@
 
 ;; FIXME: experiments only
 (setq jiralib-url "http://localhost:8080")
+
+
+;; ;; LSP
+;; (use-package flycheck
+;;   :ensure t
+;;   :init
+;;   (global-flycheck-mode t))
+;; (use-package yasnippet
+;;   :ensure t)
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :hook (haskell-mode . lsp)
+;;   :commands lsp)
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :commands lsp-ui-mode)
+;; (use-package lsp-haskell
+;;  :ensure t
+;;  :config
+;;  (setq lsp-haskell-process-path-hie "ghcide")
+;;  (setq lsp-haskell-process-args-hie '())
+;;  ;; Comment/uncomment this line to see interactions between lsp client/server.
+;;  (setq lsp-log-io t)
+;; )
