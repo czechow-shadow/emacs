@@ -26,7 +26,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (yaml-mode gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(projectile-git-submodule-command nil)
  '(safe-local-variable-values
    (quote
@@ -92,15 +92,18 @@
           my-large-font-height 143))
   )
 
-(custom-set-faces
- `(default ((t (:family ,my-font-family
-                :foundry "unknown"
-                :slant normal
-                :weight normal
-                :height ,my-default-font-height
-                :width normal))))
- '(helm-etags-file ((t (:foreground "violet" :underline t))))
- '(helm-ff-file ((t (:foreground "violet")))))
+;; (custom-set-faces
+;;  `(default ((t (:family ,my-font-family
+;;                 :foundry "unknown"
+;;                 :slant normal
+;;                 :weight normal
+;;                 :height ,my-default-font-height
+;;                 :width normal))))
+;;  '(helm-etags-file ((t (:foreground "violet" :underline t))))
+;;  '(helm-ff-file ((t (:foreground "violet")))))
+
+(set-face-attribute 'default nil :font "DejaVu Sans Mono")
+(set-face-attribute 'mode-line nil :font "DejaVu Sans Mono")
 
 ;; Do not display tooltips with default gtk look
  (setq x-gtk-use-system-tooltips nil)
@@ -130,7 +133,7 @@
 
 ;; Haskell & intero configuration
 ;; (package-install 'intero)
-(require 'intero)
+;; (require 'intero)
 
 
 (require 'flycheck)
@@ -184,14 +187,19 @@
 (require 'projectile)
 (projectile-mode)
 
-;; Make safe variable for all searched directories
-(put 'projectile-tags-command 'safe-local-variable
-     (lambda (cmd)
-       (string-match-p "^find\\(\s+[^\s|]+\\)+\s+\|\s+grep\s+hs\$\s+\|\s+xargs\s+hasktags\s+-e$"
-		       cmd)))
+;; ;; Make safe variable for all searched directories
+;; (put 'projectile-tags-command 'safe-local-variable
+;;      (lambda (cmd)
+;;        (string-match-p "^find\\(\s+[^\s|]+\\)+\s+\|\s+grep\s+hs\$\s+\|\s+xargs\s+hasktags\s+-e$"
+;; 		       cmd)))
 
 (put 'projectile-ghcid-command 'safe-local-variable (lambda (_) t))
 (put 'dante-repl-command-line 'safe-local-variable (lambda (_) t))
+(put 'projectile-tags-command 'safe-local-variable (lambda (_) t))
+
+(put 'pcz-dispatch-ide 'safe-local-variable (lambda (_) t))
+(put 'pcz-dispatch-ide-engine 'safe-local-variable (lambda (_) t))
+
 
 (require 'helm-projectile)
 (helm-projectile-on)
@@ -274,11 +282,22 @@
 (defun my-buffer-face-mode-code ()
   "Set font to a hivariable width (proportional) fonts in current buffer"
   (interactive)
-  (setq buffer-face-mode-face `(:height ,my-large-font-height))
-  (buffer-face-mode))
+  ;; (setq buffer-face-mode-face `(:height ,my-large-font-height))
+  ;; (buffer-face-mode)
+  )
 
-(add-hook 'haskell-mode-hook 'my-buffer-face-mode-code)
-(add-hook 'org-mode-hook 'my-buffer-face-mode-code)
+;;(add-hook 'haskell-mode-hook 'my-buffer-face-mode-code)
+;;(add-hook 'org-mode-hook 'my-buffer-face-mode-code)
+
+(setq my-small-font-height 94)
+
+(defun pcz-buffer-face ()
+  (interactive)
+  (setq buffer-face-mode-face `(:height ,my-small-font-height))
+  (buffer-face-mode)
+  )
+
+(add-hook 'ghcid-mode-hook 'pcz-buffer-face)
 
 (evil-mode 1)
 
@@ -290,6 +309,7 @@
   (define-key evil-normal-state-map (kbd "C-n") 'helm-projectile-ag)
   ;; magit
   (define-key evil-normal-state-map (kbd "M-RET") 'magit-status)
+  (define-key evil-normal-state-map (kbd "<C-return>") 'lsp-execute-code-action)
   ;; move-text
   (define-key evil-visual-state-map "J" (concat ":m '>+1" (kbd "RET") "gv=gv"))
   (define-key evil-visual-state-map "K" (concat ":m '<-2" (kbd "RET") "gv=gv"))
@@ -361,16 +381,18 @@
   "Choosing either stack or dante mode."
   (message "Choosing haskell mode -> up and running")
   (message (concat "Projectile project root: " (projectile-project-root)))
+  (message (concat "pcz-dispatch-ide: " pcz-dispatch-ide))
   (if (locate-dominating-file "." "shell.nix")
-      (progn (message "Enabling dante mode")
-        (flycheck-mode)
-        (dante-mode))
-      (progn (message "NOT enabling intero mode")
+      (progn (message "NOT Enabling DANTE mode")
+        ;; (flycheck-mode)
+        ;; (dante-mode)
+	)
+      (progn (message "NOT enabling INTERO mode")
         ;;(intero-mode))))
         )))
 
 ;; (add-hook 'haskell-mode-hook 'flycheck-mode) ;; probably not needed
-(add-hook 'haskell-mode-hook 'my-choose-haskell-mode)
+;; (add-hook 'haskell-mode-hook 'my-choose-haskell-mode)
 
 
 ;; Buffer size management
@@ -405,25 +427,103 @@
 (setq jiralib-url "http://localhost:8080")
 
 
-;; ;; LSP
-;; (use-package flycheck
-;;   :ensure t
-;;   :init
-;;   (global-flycheck-mode t))
-;; (use-package yasnippet
-;;   :ensure t)
-;; (use-package lsp-mode
-;;   :ensure t
-;;   :hook (haskell-mode . lsp)
-;;   :commands lsp)
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :commands lsp-ui-mode)
-;; (use-package lsp-haskell
-;;  :ensure t
-;;  :config
-;;  (setq lsp-haskell-process-path-hie "ghcide")
-;;  (setq lsp-haskell-process-args-hie '())
-;;  ;; Comment/uncomment this line to see interactions between lsp client/server.
-;;  (setq lsp-log-io t)
-;; )
+;; LSP
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode t))
+(use-package yasnippet
+  :ensure t)
+(use-package lsp-mode
+  :ensure t
+  ;; :hook (haskell-mode . lsp)
+  :commands lsp)
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+(use-package lsp-haskell
+ :ensure t
+ :config
+ ;; (setq lsp-haskell-process-path-hie "ghcide")
+ (setq lsp-haskell-process-path-hie "ghcide-8.8.3")
+ (setq lsp-haskell-process-args-hie '())
+ ;; Comment/uncomment this line to see interactions between lsp client/server.
+ (setq lsp-log-io t)
+)
+;; -------------------------------------------------------------------------------
+;;                          Playing with dynamic mode dispatch
+;; -------------------------------------------------------------------------------
+(defgroup czechow nil
+  "Private configuation dispatch methods."
+  :group 'tools
+  :group 'convenience)
+
+(defcustom pcz-dispatch-ide "intero"
+  "The value haskell-mode-hook will use to decide which ide to launch."
+  :group 'czechow
+  :type 'string)
+
+
+(defun init-log ()
+  (write-region "" nil "~/l"))
+
+(defun log-msg (msg)
+  (message msg)
+  (write-region
+   (concat (substring (current-time-string) 11 19) " [INFO] " msg "\n")
+   nil "~/l" 'append))
+
+;;
+;; (add-hook 'haskell-mode-hook 'pcz-haskell-mode-setup)
+
+;; We need to have two stages, since we can only learn .dir-locals.el
+;; settings much later than haskell mode hook is run
+
+(defun pcz-haskell-mode-setup ()
+  (init-log)
+  (log-msg "------------------------------")
+  (log-msg (concat "Identified dir: ["
+		   (file-name-directory buffer-file-name)
+		   "]"))
+
+  ;; check if .dir-locals.el exist
+  (let ((file-dir (file-name-directory buffer-file-name)))
+    (log-msg (concat "file-dir: " file-dir))
+    (unless file-dir (error "No directory found for the buffer"))
+    (let ((locals-dir-file (projectile-locate-dominating-file file-dir ".dir-locals.el")))
+      (unless locals-dir-file
+	(error "No .dir-locals.el found in project(ile), Haskell hooks cannot ber run"))
+;;      (log-msg (concat "locals-dir-file: " locals-dir-file))
+      )
+    )
+
+  (add-hook 'hack-local-variables-hook 'pcz-haskell-mode-setup-stage2 nil t)
+
+  (log-msg "pcz-haskell-mode-setup finished")
+  )
+
+;; True Haskell mode is set here
+(defun pcz-haskell-mode-setup-stage2 ()
+  (log-msg "+++ Stage2 +++")
+  (log-msg (concat "pcz-dispatch-ide: " pcz-dispatc-ide))
+
+  (cond ((string= pcz-dispatch-ide "dante")
+	 (log-msg "Choosing dante")
+	 (flycheck-mode)
+	 (dante-mode)
+	 )
+        ((string= pcz-dispatch-ide "ghcide")
+	 (log-msg "Choosng ghcide")
+	 )
+        ((string= pcz-dispatch-ide "intero")
+	 (log-msg "Intero not supported")
+	 )
+	(t (log-msg (concat "Unknown pcz-dispatch-ide: " pcz-dispatch-ide)))
+	)
+
+  (log-msg "pcz-haskell-mode-setup-stage2 run successfully")
+  )
+
+;; Wanna go fancy?
+;;(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+;;(load-theme 'vscode-dark-plus t)
