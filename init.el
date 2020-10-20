@@ -25,6 +25,7 @@
 (package-install 'yasnippet)
 (package-install 'haskell-snippets)
 (package-install 'markdown-mode)
+(package-install 'yaml-mode)
 
 (package-install 'smart-mode-line)
 (package-install 'smart-mode-line-powerline-theme)

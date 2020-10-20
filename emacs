@@ -157,31 +157,31 @@
 (add-to-list 'display-buffer-alist '("*Help*" display-buffer-same-window))
 
 
-;; If intero goto definition fails, use tags file
-(defun my-intero-goto-tag ()
-  (interactive)
-  (let ((tok (thing-at-point 'word)))
-    (or (intero-goto-definition) (helm-etags-select tok))))
+;; ;; If intero goto definition fails, use tags file
+;; (defun my-intero-goto-tag ()
+;;   (interactive)
+;;   (let ((tok (thing-at-point 'word)))
+;;     (or (intero-goto-definition) (helm-etags-select tok))))
 
 
-(defun my-intero-mode-config ()
-  "For use in 'intero-mode-hook'."
-  (define-key intero-mode-map (kbd "M-.") 'my-intero-goto-tag)
-  (define-key intero-mode-map (kbd "M-i") 'helm-swoop)
-  (define-key intero-mode-map (kbd "M-I") 'intero-goto-definition)
-  (define-key intero-mode-map (kbd "M-*") 'pop-tag-mark)
-  )
+;; (defun my-intero-mode-config ()
+;;   "For use in 'intero-mode-hook'."
+;;   (define-key intero-mode-map (kbd "M-.") 'my-intero-goto-tag)
+;;   (define-key intero-mode-map (kbd "M-i") 'helm-swoop)
+;;   (define-key intero-mode-map (kbd "M-I") 'intero-goto-definition)
+;;   (define-key intero-mode-map (kbd "M-*") 'pop-tag-mark)
+;;   )
 
-(add-hook 'intero-mode-hook 'my-intero-mode-config)
+;; (add-hook 'intero-mode-hook 'my-intero-mode-config)
 
-;; Make TAB invoke completion action in intero-repl mode
-(defun my-intero-repl-mode-config ()
-  "For use in 'intero-repl-mode-hook'."
-  (define-key intero-repl-mode-map (kbd "TAB") 'complete-symbol)
-  (define-key intero-repl-mode-map (kbd "<C-return>") 'find-file-at-point)
-  )
+;; ;; Make TAB invoke completion action in intero-repl mode
+;; (defun my-intero-repl-mode-config ()
+;;   "For use in 'intero-repl-mode-hook'."
+;;   (define-key intero-repl-mode-map (kbd "TAB") 'complete-symbol)
+;;   (define-key intero-repl-mode-map (kbd "<C-return>") 'find-file-at-point)
+;;   )
 
-(add-hook 'intero-repl-mode-hook 'my-intero-repl-mode-config)
+;; (add-hook 'intero-repl-mode-hook 'my-intero-repl-mode-config)
 
 
 (require 'projectile)
@@ -523,6 +523,9 @@
 
   (log-msg "pcz-haskell-mode-setup-stage2 run successfully")
   )
+
+;; Get rid of those annoying tabs
+(setq indent-tabs-mode nil)
 
 ;; Wanna go fancy?
 ;;(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
