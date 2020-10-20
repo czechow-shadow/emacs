@@ -16,7 +16,7 @@ declare -A GIT_REPOS=(\
 )
 
 usage() {
-  echo "Usage: `basename $0` [--force]";
+  echo "Usage: $(basename "$0") [--force]";
 }
 
 if [ $# = 1 ]; then
@@ -29,18 +29,18 @@ if [ $# = 1 ]; then
 fi
 
 GIT_DIRS=()
-for u in ${!GIT_REPOS[@]}; do
-  dir=`basename $u .git`;
-  GIT_DIRS+=(../$dir);
+for u in "${!GIT_REPOS[@]}"; do
+  dir=$(basename "$u" .git);
+  GIT_DIRS+=("../$dir");
 done
 
-BACKUP_SUFFIX=_`date '+%F_%T'`
+BACKUP_SUFFIX=_$(date '+%F_%T')
 
-for f in ${GIT_DIRS[@]}; do
+for f in "${GIT_DIRS[@]}"; do
   fb="${f}$BACKUP_SUFFIX";
   echo "Checking [$f]";
 
-  if [ -e "$f" -o -h "$f" ]; then
+  if [ -e "$f" ] || [ -h "$f" ]; then
     echo "$f already exists";
     if [ -n "$FORCE" ]; then
       echo "Backing up $f to $fb";
@@ -52,12 +52,12 @@ for f in ${GIT_DIRS[@]}; do
   fi
 done
 
-for i in ${FILES[@]}; do
+for i in "${FILES[@]}"; do
   f="$DEST_DIR/$i";
   fb="$DEST_DIR/${i}${BACKUP_SUFFIX}";
   echo "Checking [$f]";
 
-  if [ -e "$f" -o -h "$f" ]; then
+  if [ -e "$f" ] || [ -h "$f" ]; then
     echo "$f already exists";
     if [ -n "$FORCE" ]; then
       echo "Backing up $f to $fb";
@@ -75,18 +75,16 @@ emacs --batch -q -l init.el
 mkdir -p "$EMACS_CUSTOM_DIR";
 
 echo "Installing customized packages"
-for u in ${!GIT_REPOS[@]}; do
-  dir=`basename $u .git`;
+for u in "${!GIT_REPOS[@]}"; do
+  dir=$(basename "$u" .git);
   rev=${GIT_REPOS[$u]}
 
   ( cd .. && git clone "$u" && cd "$dir" && git checkout "$rev" )
 
-  d=`readlink -f ../"$dir"`;
+  d=$(readlink -f ../"$dir");
   ( cd "$EMACS_CUSTOM_DIR" && ln -s "$d" "$dir" )
 done
 
-d=`pwd`;
+d=$(pwd);
 
 ( cd "$DEST_DIR" && ln -s "$d"/emacs .emacs )
-
-
