@@ -1,3 +1,7 @@
+;; Current status (2020-12-05)
+;; Automatic ghcie-
+
+
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (custom-set-variables
@@ -18,15 +22,21 @@
     (nix impure-nix new-build nix-ghci bare-cabal bare-ghci)))
  '(dante-tap-type-time 1)
  '(fci-rule-color "#383838")
+ '(ghcid-height 100)
  '(helm-mode t)
  '(inhibit-startup-screen t)
+ '(lsp-ui-doc-delay 0.2)
+ '(lsp-ui-doc-max-height 4)
+ '(lsp-ui-doc-position (quote top))
+ '(lsp-ui-sideline-ignore-duplicate t)
+ '(lsp-ui-sideline-show-hover t)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (yaml-mode gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (lsp-ui yaml-mode gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(projectile-git-submodule-command nil)
  '(safe-local-variable-values
    (quote
@@ -196,6 +206,7 @@
 (put 'projectile-ghcid-command 'safe-local-variable (lambda (_) t))
 (put 'dante-repl-command-line 'safe-local-variable (lambda (_) t))
 (put 'projectile-tags-command 'safe-local-variable (lambda (_) t))
+(put 'ghcid-height 'safe-local-variable (lambda (_) t))
 
 (put 'pcz-dispatch-ide 'safe-local-variable (lambda (_) t))
 (put 'pcz-dispatch-ide-engine 'safe-local-variable (lambda (_) t))
@@ -377,19 +388,19 @@
 
 
 ; 'my-choose-haskell-mode
-(defun my-choose-haskell-mode ()
-  "Choosing either stack or dante mode."
-  (message "Choosing haskell mode -> up and running")
-  (message (concat "Projectile project root: " (projectile-project-root)))
-  (message (concat "pcz-dispatch-ide: " pcz-dispatch-ide))
-  (if (locate-dominating-file "." "shell.nix")
-      (progn (message "NOT Enabling DANTE mode")
-        ;; (flycheck-mode)
-        ;; (dante-mode)
-	)
-      (progn (message "NOT enabling INTERO mode")
-        ;;(intero-mode))))
-        )))
+;; (defun my-choose-haskell-mode ()
+;;   "Choosing either stack or dante mode."
+;;   (message "Choosing haskell mode -> up and running")
+;;   (message (concat "Projectile project root: " (projectile-project-root)))
+;;   (message (concat "pcz-dispatch-ide: " pcz-dispatch-ide))
+;;   (if (locate-dominating-file "." "shell.nix")
+;;       (progn (message "NOT Enabling DANTE mode")
+;;         ;; (flycheck-mode)
+;;         ;; (dante-mode)
+;; 	)
+;;       (progn (message "NOT enabling INTERO mode")
+;;         ;;(intero-mode))))
+;;         )))
 
 ;; (add-hook 'haskell-mode-hook 'flycheck-mode) ;; probably not needed
 ;; (add-hook 'haskell-mode-hook 'my-choose-haskell-mode)
@@ -448,7 +459,7 @@
  (setq lsp-haskell-process-path-hie "ghcide-8.8.3")
  (setq lsp-haskell-process-args-hie '())
  ;; Comment/uncomment this line to see interactions between lsp client/server.
- (setq lsp-log-io t)
+ ;; (setq lsp-log-io t)
 )
 ;; -------------------------------------------------------------------------------
 ;;                          Playing with dynamic mode dispatch
@@ -463,7 +474,6 @@
   :group 'czechow
   :type 'string)
 
-
 (defun init-log ()
   (write-region "" nil "~/l"))
 
@@ -474,7 +484,7 @@
    nil "~/l" 'append))
 
 ;;
-;; (add-hook 'haskell-mode-hook 'pcz-haskell-mode-setup)
+(add-hook 'haskell-mode-hook 'pcz-haskell-mode-setup)
 
 ;; We need to have two stages, since we can only learn .dir-locals.el
 ;; settings much later than haskell mode hook is run
@@ -505,7 +515,7 @@
 ;; True Haskell mode is set here
 (defun pcz-haskell-mode-setup-stage2 ()
   (log-msg "+++ Stage2 +++")
-  (log-msg (concat "pcz-dispatch-ide: " pcz-dispatc-ide))
+  (log-msg (concat "pcz-dispatch-ide: " pcz-dispatch-ide))
 
   (cond ((string= pcz-dispatch-ide "dante")
 	 (log-msg "Choosing dante")
@@ -513,7 +523,10 @@
 	 (dante-mode)
 	 )
         ((string= pcz-dispatch-ide "ghcide")
-	 (log-msg "Choosng ghcide")
+	 (log-msg (concat "Choosng ghcide: [" pcz-dispatch-ide-engine "]"))
+	 (setq lsp-haskell-process-path-hie pcz-dispatch-ide-engine)
+	 (setq lsp-haskell-process-args-hie '())
+	 (lsp)
 	 )
         ((string= pcz-dispatch-ide "intero")
 	 (log-msg "Intero not supported")
@@ -530,3 +543,9 @@
 ;; Wanna go fancy?
 ;;(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 ;;(load-theme 'vscode-dark-plus t)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(lsp-ui-sideline-symbol-info ((t (:background "gray24" :slant italic :height 0.99)))))
