@@ -33,7 +33,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (lsp-haskell lsp-mode lsp-ui yaml-mode gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (vdiff-magit vdiff lsp-haskell lsp-mode lsp-ui yaml-mode gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(projectile-git-submodule-command nil)
  '(safe-local-variable-values
    (quote
@@ -67,6 +67,7 @@
  '(vc-directory-exclusion-list
    (quote
     ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" ".stack-work")))
+ '(vdiff-auto-refine t)
  '(whitespace-style
    (quote
     (face trailing tabs spaces lines newline indentation space-after-tab space-before-tab space-mark tab-mark))))
@@ -487,3 +488,14 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(lsp-ui-sideline-symbol-info ((t (:background "gray24" :slant italic :height 0.99)))))
+
+
+(require 'vdiff)
+
+(require 'vdiff-magit)
+(define-key magit-mode-map "e" 'vdiff-magit-dwim)
+(define-key magit-mode-map "E" 'vdiff-magit)
+(transient-suffix-put 'magit-dispatch "e" :description "vdiff (dwim)")
+(transient-suffix-put 'magit-dispatch "e" :command 'vdiff-magit-dwim)
+(transient-suffix-put 'magit-dispatch "E" :description "vdiff")
+(transient-suffix-put 'magit-dispatch "E" :command 'vdiff-magit)

@@ -37,6 +37,10 @@
 
 (package-install 'magit)
 (package-install 'evil-magit)
+
+(package-install 'vdiff)
+(package-install 'vdiff-magit)
+
 (package-install 'flycheck-inline)
 (package-install 'flycheck-pos-tip) ;; just to show off
 (package-install 'diff-hl)
@@ -44,6 +48,7 @@
 
 ;; Needed by lsp config
 (package-install 'use-package)
+(package-install 'company)
 
 ;; dante dependencies
 (package-install 'cl-lib)
