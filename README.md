@@ -1,4 +1,4 @@
-# Emacs Haskell development configuration (intero and dante+nix) with evil mode 
+# Emacs Haskell development configuration (lsp and dante+nix) with evil mode
 
 ## Installing environment
 Install new configuration into $HOME directory.  If you already have
@@ -17,4 +17,4 @@ cd emacs-config
 Emacs is ready and can be run with the  ```emacs``` command
 
 ## Compatibility
-Tested with emacs 25.3
+Tested with emacs 26.3
