@@ -25,6 +25,7 @@
  '(ghcid-height 100)
  '(helm-mode t)
  '(inhibit-startup-screen t)
+ '(lsp-haskell-formatting-provider "stylish-haskell")
  '(lsp-ui-doc-delay 0.2)
  '(lsp-ui-doc-max-height 4)
  '(lsp-ui-doc-position (quote top))
@@ -36,7 +37,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (lsp-ui yaml-mode gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (lsp-haskell lsp-mode lsp-ui yaml-mode gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(projectile-git-submodule-command nil)
  '(safe-local-variable-values
    (quote

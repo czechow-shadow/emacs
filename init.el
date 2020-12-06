@@ -42,6 +42,9 @@
 (package-install 'diff-hl)
 (package-install 'hl-todo)
 
+;; Needed by lsp config
+(package-install 'use-package)
+
 ;; dante dependencies
 (package-install 'cl-lib)
 (package-install 'dash)
@@ -53,8 +56,10 @@
 (package-install 'lcr)
 
 ;; Intero dependencies
+;; FIXME: obsolete intero
 (package-install 'company)
 
 
 ;; Make sure we stop emacs instances
 (kill-emacs)
+;;; init.el ends here
