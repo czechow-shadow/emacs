@@ -1,7 +1,3 @@
-;; Current status (2020-12-05)
-;; Automatic ghcie-
-
-
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (custom-set-variables
@@ -142,11 +138,6 @@
 (global-set-key (kbd "C-c m") 'org-tags-view)
 
 
-;; Haskell & intero configuration
-;; (package-install 'intero)
-;; (require 'intero)
-
-
 (require 'flycheck)
 ;; Set flycheck action on file save
 (setq flycheck-check-syntax-automatically '(save))
@@ -168,33 +159,6 @@
 (add-to-list 'display-buffer-alist '("*Help*" display-buffer-same-window))
 
 
-;; ;; If intero goto definition fails, use tags file
-;; (defun my-intero-goto-tag ()
-;;   (interactive)
-;;   (let ((tok (thing-at-point 'word)))
-;;     (or (intero-goto-definition) (helm-etags-select tok))))
-
-
-;; (defun my-intero-mode-config ()
-;;   "For use in 'intero-mode-hook'."
-;;   (define-key intero-mode-map (kbd "M-.") 'my-intero-goto-tag)
-;;   (define-key intero-mode-map (kbd "M-i") 'helm-swoop)
-;;   (define-key intero-mode-map (kbd "M-I") 'intero-goto-definition)
-;;   (define-key intero-mode-map (kbd "M-*") 'pop-tag-mark)
-;;   )
-
-;; (add-hook 'intero-mode-hook 'my-intero-mode-config)
-
-;; ;; Make TAB invoke completion action in intero-repl mode
-;; (defun my-intero-repl-mode-config ()
-;;   "For use in 'intero-repl-mode-hook'."
-;;   (define-key intero-repl-mode-map (kbd "TAB") 'complete-symbol)
-;;   (define-key intero-repl-mode-map (kbd "<C-return>") 'find-file-at-point)
-;;   )
-
-;; (add-hook 'intero-repl-mode-hook 'my-intero-repl-mode-config)
-
-
 (require 'projectile)
 (projectile-mode)
 
@@ -210,7 +174,6 @@
 (put 'ghcid-height 'safe-local-variable (lambda (_) t))
 
 (put 'pcz-dispatch-ide 'safe-local-variable (lambda (_) t))
-(put 'pcz-dispatch-ide-engine 'safe-local-variable (lambda (_) t))
 
 
 (require 'helm-projectile)
@@ -388,24 +351,6 @@
 (require 'dante)
 
 
-; 'my-choose-haskell-mode
-;; (defun my-choose-haskell-mode ()
-;;   "Choosing either stack or dante mode."
-;;   (message "Choosing haskell mode -> up and running")
-;;   (message (concat "Projectile project root: " (projectile-project-root)))
-;;   (message (concat "pcz-dispatch-ide: " pcz-dispatch-ide))
-;;   (if (locate-dominating-file "." "shell.nix")
-;;       (progn (message "NOT Enabling DANTE mode")
-;;         ;; (flycheck-mode)
-;;         ;; (dante-mode)
-;; 	)
-;;       (progn (message "NOT enabling INTERO mode")
-;;         ;;(intero-mode))))
-;;         )))
-
-;; (add-hook 'haskell-mode-hook 'flycheck-mode) ;; probably not needed
-;; (add-hook 'haskell-mode-hook 'my-choose-haskell-mode)
-
 
 ;; Buffer size management
 (defun set-window-width (n)
@@ -435,7 +380,7 @@
 
 ;(require 'org-jira)
 
-;; FIXME: experiments only
+;; experiments only
 (setq jiralib-url "http://localhost:8080")
 
 
@@ -456,9 +401,6 @@
 (use-package lsp-haskell
  :ensure t
  :config
- ;; (setq lsp-haskell-process-path-hie "ghcide")
- (setq lsp-haskell-process-path-hie "ghcide-8.8.3")
- (setq lsp-haskell-process-args-hie '())
  ;; Comment/uncomment this line to see interactions between lsp client/server.
  ;; (setq lsp-log-io t)
 )
@@ -470,7 +412,7 @@
   :group 'tools
   :group 'convenience)
 
-(defcustom pcz-dispatch-ide "intero"
+(defcustom pcz-dispatch-ide "lsp" ;; or "dante", ...
   "The value haskell-mode-hook will use to decide which ide to launch."
   :group 'czechow
   :type 'string)
@@ -523,14 +465,9 @@
 	 (flycheck-mode)
 	 (dante-mode)
 	 )
-        ((string= pcz-dispatch-ide "ghcide")
-	 (log-msg (concat "Choosng ghcide: [" pcz-dispatch-ide-engine "]"))
-	 (setq lsp-haskell-process-path-hie pcz-dispatch-ide-engine)
-	 (setq lsp-haskell-process-args-hie '())
+        ((string= pcz-dispatch-ide "lsp")
+	 (log-msg "Choosing lsp")
 	 (lsp)
-	 )
-        ((string= pcz-dispatch-ide "intero")
-	 (log-msg "Intero not supported")
 	 )
 	(t (log-msg (concat "Unknown pcz-dispatch-ide: " pcz-dispatch-ide)))
 	)

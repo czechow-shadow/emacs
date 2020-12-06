@@ -55,11 +55,6 @@
 (package-install 'xref)
 (package-install 'lcr)
 
-;; Intero dependencies
-;; FIXME: obsolete intero
-(package-install 'company)
-
-
 ;; Make sure we stop emacs instances
 (kill-emacs)
 ;;; init.el ends here
