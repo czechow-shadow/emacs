@@ -17,8 +17,10 @@
    (quote
     (nix impure-nix new-build nix-ghci bare-cabal bare-ghci)))
  '(dante-tap-type-time 1)
+ '(evil-undo-system (quote undo-tree))
  '(fci-rule-color "#383838")
  '(ghcid-height 100)
+ '(helm-completion-style (quote emacs))
  '(helm-mode t)
  '(inhibit-startup-screen t)
  '(lsp-haskell-formatting-provider "stylish-haskell")
@@ -499,3 +501,18 @@
 (transient-suffix-put 'magit-dispatch "e" :command 'vdiff-magit-dwim)
 (transient-suffix-put 'magit-dispatch "E" :description "vdiff")
 (transient-suffix-put 'magit-dispatch "E" :command 'vdiff-magit)
+
+
+(defun projectile-ghcid-restart ()
+  "Restart ghcid"
+  (interactive)
+  (let* ((pb (-first-item (-filter '(lambda (b) (string-match "^\*ghcid:.*\*$" (buffer-name b))) (buffer-list))))
+	 (target-size (if pb (window-height (get-buffer-window pb)) 7)))
+    (projectile-ghcid-stop)
+    (projectile-ghcid)
+    (let* ((b (-first-item (-filter '(lambda (b) (string-match "^\*ghcid:.*\*$" (buffer-name b))) (buffer-list))))
+	   (s (window-height (get-buffer-window b)))
+	   (d (- target-size s)))
+      (window-resize-no-error (get-buffer-window b) d))
+    )
+  )
