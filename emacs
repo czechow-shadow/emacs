@@ -25,7 +25,7 @@
  '(inhibit-startup-screen t)
  '(lsp-haskell-formatting-provider "stylish-haskell")
  '(lsp-ui-doc-delay 0.2)
- '(lsp-ui-doc-max-height 4)
+ '(lsp-ui-doc-max-height 7)
  '(lsp-ui-doc-position (quote top))
  '(lsp-ui-sideline-ignore-duplicate t)
  '(lsp-ui-sideline-show-hover t)
@@ -516,3 +516,6 @@
       (window-resize-no-error (get-buffer-window b) d))
     )
   )
+
+;; Silence bell
+(setq ring-bell-function 'ignore)
