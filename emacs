@@ -17,6 +17,7 @@
    (quote
     (nix impure-nix new-build nix-ghci bare-cabal bare-ghci)))
  '(dante-tap-type-time 1)
+ '(ediprolog-system (quote swi))
  '(evil-undo-system (quote undo-tree))
  '(fci-rule-color "#383838")
  '(ghcid-height 100)
@@ -35,7 +36,7 @@
  '(org-agenda-files (quote ("~/useful.org")))
  '(package-selected-packages
    (quote
-    (vdiff-magit vdiff lsp-haskell lsp-mode lsp-ui yaml-mode gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
+    (linum-relative ediprolog vdiff-magit vdiff lsp-haskell lsp-mode lsp-ui yaml-mode gnu-elpa-keyring-update evil-mc move-text beacon ace-window hl-todo diff-hl magit evil-magit flycheck-inline dante lcr f evil helm-ag ag smart-mode-line-powerline-theme smart-mode-line undo-tree multiple-cursors markdown-mode helm-swoop helm-projectile haskell-snippets expand-region)))
  '(projectile-git-submodule-command nil)
  '(safe-local-variable-values
    (quote
@@ -519,3 +520,10 @@
 
 ;; Silence bell
 (setq ring-bell-function 'ignore)
+
+;; Prolog
+(require 'ediprolog)
+
+;; Relative line numbers
+(require 'linum-relative)
+(linum-relative-global-mode)

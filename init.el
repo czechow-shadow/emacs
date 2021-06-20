@@ -60,6 +60,12 @@
 (package-install 'xref)
 (package-install 'lcr)
 
+;; Prolog
+(package-install 'ediprolog)
+
+;; Relative line numbers
+(package-install 'linum-relative)
+
 ;; Make sure we stop emacs instances
 (kill-emacs)
 ;;; init.el ends here
